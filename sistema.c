@@ -1,5 +1,7 @@
 #include "globals.h"
 #include "planifikatzailea.h"
+#include <stdio.h>
+#include <stdlib.h>
 
 void hasi_sistema(){
 
@@ -15,11 +17,18 @@ void hasi_sistema(){
                     }
                     else{
                         computation_engine.cpuak[i].coreak[j].h_haria[k].proc->cycles--;
-                        if(computation_engine.cpuak[i].coreak[j].h_haria[k].proc->cycles == 0)
-                            planifikatzailea(i, j, k);
+                        if(computation_engine.cpuak[i].coreak[j].h_haria[k].proc->cycles == 0){
+                          list_rem_head(&allprocs);
+                          printf("pid %d: Exekuzioaren amaiera.\n",computation_engine.cpuak[i].coreak[j].h_haria[k].proc->pid );
+                          if(list_empty(&allprocs)){
+                            printf("Prozesu guztiak amaituta\n");
+                            exit(0);
+                          }
+                          planifikatzailea(i, j, k);
+                        }
                     }
                 }
             }
         }
-    }   
+    }
 }
