@@ -1,5 +1,6 @@
 #include "globals.h"
 #include "planifikatzailea.h"
+#include "dispatcher.h"
 #include <stdio.h>
 #include <stdlib.h>
 
@@ -24,7 +25,7 @@ void hasi_sistema(){
                             printf("Prozesu guztiak amaituta\n");
                             exit(0);
                           }
-                          planifikatzailea(i, j, k);
+                          dispatcher_atera_CPU(computation_engine.cpuak[i].coreak[j].h_haria[k].proc,i,j,k);
                         }
                     }
                 }
