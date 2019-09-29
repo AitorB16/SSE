@@ -19,13 +19,7 @@ void hasi_sistema(){
                     else{
                         computation_engine.cpuak[i].coreak[j].h_haria[k].proc->cycles--;
                         if(computation_engine.cpuak[i].coreak[j].h_haria[k].proc->cycles == 0){
-                          list_rem_head(&allprocs);
-                          printf("pid %d: Exekuzioaren amaiera.\n",computation_engine.cpuak[i].coreak[j].h_haria[k].proc->pid );
-                          if(list_empty(&allprocs)){
-                            printf("Prozesu guztiak amaituta\n");
-                            exit(0);
-                          }
-                          dispatcher_atera_CPU(computation_engine.cpuak[i].coreak[j].h_haria[k].proc,i,j,k);
+                          dispatcher_atera_CPU(i,j,k);
                         }
                     }
                 }

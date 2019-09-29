@@ -6,7 +6,6 @@
 
 void dispatcher_sartu_CPU(struct pcb *proz,int cpu, int core, int hharia);
 
-void dispatcher_atera_CPU(struct pcb *proz,int cpu, int core, int hharia);
+void dispatcher_atera_CPU(int cpu, int core, int hharia);
 
 #endif
-

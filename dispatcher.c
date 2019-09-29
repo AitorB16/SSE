@@ -5,7 +5,7 @@
 #include "planifikatzailea.h"
 #include <stdio.h>
 #include <stdlib.h>
-#include <time.h> 
+#include <time.h>
 
 void dispatcher_sartu_CPU(struct pcb *proz,int cpu, int core, int hharia){
     proz->pid=rand() % 32769;
@@ -15,7 +15,13 @@ void dispatcher_sartu_CPU(struct pcb *proz,int cpu, int core, int hharia){
 
 }
 
-void dispatcher_atera_CPU(struct pcb *proz,int cpu, int core, int hharia){
-    free(proz);    
+void dispatcher_atera_CPU(int cpu, int core, int hharia){
+    list_rem_head(&allprocs);
+    printf("pid %d: Exekuzioaren amaiera.\n",computation_engine.cpuak[cpu].coreak[core].h_haria[hharia].proc->pid );
+    free(computation_engine.cpuak[cpu].coreak[core].h_haria[hharia].proc);
+    if(list_empty(&allprocs)){
+      printf("Prozesu guztiak amaituta\n");
+      exit(0);
+    }
     planifikatzailea(cpu,core,hharia);
 }
