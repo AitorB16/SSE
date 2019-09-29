@@ -7,6 +7,7 @@
 
 void planifikatzailea(int cpu, int core, int hharia){ 
     if(list_empty(&prest_ilara)){
+      //oraingoz kasu berezitzat hartu eta dispatcherrak egingo dituen esleipenetatik kanpo
       struct pcb* proz_nulua;
       sortu_prozesu_nulua(&proz_nulua);
       computation_engine.cpuak[cpu].coreak[core].h_haria[hharia].proc=proz_nulua;
