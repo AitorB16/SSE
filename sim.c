@@ -1,30 +1,30 @@
 /**
- * Planifikatzailea v1 SE/SO
+ * Scheduler v1 SE/SO
  */
 
-#include "si.h"
-#include "procs.h"
-#include "sched.h"
-#include "computation_engine.h"
-#include "sistema.h"
+#include "io.h"
+#include "proc.h"
+#include "scheduling.h"
+#include "computing_engine.h"
+#include "system.h"
 #include "misc.h"
 #include "literal.h"
-#include "konfigurazioa.h"
+#include "conf.h"
 #include "globals.h"
 #include "literal.h"
 #include <stdlib.h>
 #include <stdio.h>
 
 int main(int argc, char **argv){
-	
 
-        sortu_konfigurazioa(argc - 1, argv);	
-        sortu_allprocs_ilara();
-	sortu_prest_ilara();
-	sortu_computation_engine(konf.cpu_k, konf.core_k, konf.hhari_k, konf.gpu_k);
 
-	irakurri_fitxategia(konf.fitx_izena);
+  get_conf(argc - 1, argv);
+	create_allprocs_queue();
+	create_ready_queue();
+	create_computing_engine(conf.ncpus, conf.ncores, conf.nhthreads, conf.ngpus);
 
-        hasi_sistema();
+	read_file(conf.file_name);
+
+  start_simulation();
 
 }
