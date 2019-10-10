@@ -3,7 +3,11 @@
 
 #include "proc.h"
 
-void scheduler(int cpu, int core, int hthread);
+void schedule(int cpu, int core, int hthread);
+
+struct pcb *scheduler();
+
+void dispatcher(int cpu, int core, int hthread, struct pcb *proc);
 
 void create_ready_queue();
 

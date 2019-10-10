@@ -6,6 +6,7 @@
 typedef struct hardware_thread_t{
 
 	struct pcb *proc;
+        struct pcb *null_process;
 
 } hardware_thread_t;
 
@@ -34,5 +35,9 @@ typedef struct computing_engine_t{
 } computing_engine_t;
 
 void create_computing_engine(int ncpus, int ncores, int nhthreads, int ngpus);
+
+void save_null_process(int cpu, int core, int hthread);
+
+void restore_null_process(int cpu, int core, int hthread);
 
 #endif
