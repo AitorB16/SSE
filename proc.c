@@ -4,7 +4,19 @@
 #include <stdlib.h>
 #include <stdio.h>
 
+#define MAX_PID 1000000
+
+int pid_array[MAX_PID];
+
 list_t allprocs;
+
+void init_pid_array(){
+    
+    int i;
+
+    for (i = 0; i < MAX_PID;i++)
+        pid_array[i] = 0;
+}
 
 void create_allprocs_queue(){
 
@@ -15,9 +27,13 @@ void create_allprocs_queue(){
 void create_new_process(long duration){
 
     struct pcb *proc = malloc(sizeof(pcb));
+    int pid;
+
     proc->cycles = duration;
-    insert_proc_aall_procs(proc);
-    printf("New process created\n");
+    pid = generate_pid();
+    proc->pid = pid;
+    insert_process_allprocs_queue(proc);
+    printf("New process created with pid %d\n", proc->pid);
     insert_process_ready_queue(proc);
 }
 
@@ -31,15 +47,32 @@ void create_null_process(struct pcb **null_process){
 }
 
 int generate_pid(){
-
+    
+    int i;
+    int pid = -1;
+    
+    for(i = 0; i < MAX_PID; i++){
+       if(pid_array[i] == 0){
+            pid = i + 1;
+            pid_array[i] = 1;
+            break;
+       } 
+    }
+    return(pid);
 }
 
-void insert_proc_allprocs_queue(struct pcb *proc){
+void release_pid(int pid){
+    
+    pid_array[pid - 1] = 0;
+}
+
+void insert_process_allprocs_queue(struct pcb *proc){
 
 	list_append(&allprocs, proc);
 }
 
-void remove_proc_allprocs_queue(struct pcb *proc){
+void remove_process_allprocs_queue(struct pcb *proc){
 
-	list_rem_head_allprocs(&allprocs);
+    release_pid(proc->pid);
+    list_rem_head_data(&allprocs);
 }

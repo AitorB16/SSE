@@ -31,21 +31,32 @@ void scheduler(int cpu, int core, int hthread){
       }
     }
 
-void context_switch(struct pcb *proc){
-	
-	if(proc->cycles == 0){
-		list_rem_head_data(&all_procs);
-	}
+void remove_process_from_execution(int cpu, int core, int hthread){
 
-        list_head(&ready_queue,&proc);
-	assign_proc_to_hthread(int cpu, int core, int hthread, proc);
-	remove_proc_ready_queue(&ready_queue);
+    struct pcb *proc;
+
+    proc = computing_engine.cpus[cpu].cores[core].hthreads[hthread].proc;
+    if(proc->pid > 0 && proc->cycles == 0){
+        
+        remove_process_allprocs_queue(proc);
+    }
+    else if(proc->pid == 0){
+        insert_process_ready_queue(proc);
+    }
+
+
+}
+
+void context_switch(int cpu, int core, int hthread, struct pcb *proc){
+	
+        remove_process_from_execution(cpu, core, hthread);
+	assign_process_to_hthread(cpu, core, hthread, proc);
+	remove_process_ready_queue(&ready_queue);
 }
 
 void dispatcher(int cpu, int core, int hthread, struct pcb *proc){
 
-    context_switch(proc);    
-    save_null_process(cpu, core, hthread);
+    context_switch(cpu, core, hthread, proc);    
 
 }
 
@@ -55,7 +66,6 @@ void schedule(int cpu, int core, int hthread){
 
     if(process_to_be_scheduled()){
         proc = scheduler();
-        printf("%d\n", proc->cycles);
         dispatcher(cpu, core, hthread, proc);
     }
 
@@ -63,11 +73,8 @@ void schedule(int cpu, int core, int hthread){
 
 
 void create_ready_queue(){
-    struct pcb *null_process;
-	    
+
     list_initialize(&ready_queue); 
-    create_null_process(&null_process);
-    insert_process_ready_queue(null_process);
 
 }
 
@@ -77,9 +84,9 @@ void insert_process_ready_queue(struct pcb* proc){
 
 }
 
-void remove_process_ready_queue(struct pcb* proc){
+void remove_process_ready_queue(){
 
-    list_append(&ready_queue, proc);
+    list_rem_head(&ready_queue);
 
 }
 
@@ -87,4 +94,5 @@ long process_to_be_scheduled(){
 
     return(!list_empty(&ready_queue));
 }
+
 

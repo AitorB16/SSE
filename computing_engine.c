@@ -1,6 +1,8 @@
 #include "computing_engine.h"
 #include "proc.h"
 #include <stdlib.h>
+#include <stdio.h>
+
 
 struct computing_engine_t computing_engine;
 
@@ -23,7 +25,25 @@ void create_computing_engine(int ncpus, int ncores, int nhthreads, int ngpus){
             }
         }
 
-   }
+   } 
+
+   init_computing_engine(ncpus, ncores, nhthreads, ngpus);
+}
+
+void init_computing_engine(int ncpus, int ncores, int nhthreads, int ngpus){
+
+    int i, j, k;
+    struct pcb *null_process;
+
+    for(i = 0; i < computing_engine.ncpus; i++){
+        for(j = 0; j <  computing_engine.cpus[i].ncores; j++){
+            for(k = 0; k < computing_engine.cpus[i].cores[j].nhthreads; k++){
+                create_null_process(&null_process);
+                computing_engine.cpus[i].cores[j].hthreads[k].proc = null_process;
+                printf("%p\n",null_process);
+            }
+        }
+    }
 }
 
 void save_null_process(int cpu, int core, int hthread){
@@ -37,4 +57,10 @@ void restore_null_process(int cpu, int core, int hthread){
     computing_engine.cpus[cpu].cores[core].hthreads[hthread].null_process = computing_engine.cpus[cpu].cores[core].hthreads[hthread].proc;
     computing_engine.cpus[cpu].cores[core].hthreads[hthread].proc = NULL;
 
+}
+
+
+void assign_process_to_hthread(int cpu, int core, int hthread, struct pcb *proc){
+
+    computing_engine.cpus[cpu].cores[core].hthreads[hthread].proc = proc;
 }

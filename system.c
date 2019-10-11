@@ -8,7 +8,9 @@ void start_simulation(){
 
     int i, j, k;
 
-    while(1){
+    
+
+        while(1){
 
         for(i = 0; i < computing_engine.ncpus; i++){
             for(j = 0; j <  computing_engine.cpus[i].ncores; j++){

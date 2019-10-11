@@ -40,4 +40,8 @@ void save_null_process(int cpu, int core, int hthread);
 
 void restore_null_process(int cpu, int core, int hthread);
 
+void assign_process_to_hthread(int cpu, int core, int hthread, struct pcb *proc);
+
+void init_computing_engine(int ncpus, int ncores, int nhthreads, int ngpus);
+
 #endif
