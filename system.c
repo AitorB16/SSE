@@ -1,6 +1,5 @@
 #include "globals.h"
 #include "scheduling.h"
-#include "dispatcher.h"
 #include <stdio.h>
 #include <stdlib.h>
 
