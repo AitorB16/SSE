@@ -39,5 +39,7 @@ void list_rem_head_data(list_t *l);
 
 void list_rem_tail_data(list_t *l);
 
+void list_rem_elem(list_t *l, struct pcb *elem);
+
 
 #endif

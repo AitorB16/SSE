@@ -221,3 +221,36 @@ long list_length(list_t *l) {
     return l->length; 
 }
 
+void list_rem_elem(list_t *l, struct pcb *elem)
+{
+    struct node_list *node;
+    node = l->head;
+
+    if(l->length == 1){
+        l->head = NULL;
+        l->tail = NULL;
+    }
+    else
+    while (node->next!= NULL){
+        if(node->data==elem){
+          if(l->head == node){
+              l->head = node->next;
+              l->head->prev = NULL;
+          }
+          else if(l->tail == node){
+              l->tail = node->prev;
+              l->tail->next = NULL;
+          }
+          else{
+              node->prev->next = node->next;
+              node->next->prev = node->prev;
+          }
+          break;
+        }
+        else{node=node->next;}
+    }
+    l->length--;
+    free(node->data);
+    free(node);
+}
+

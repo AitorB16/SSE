@@ -3,7 +3,7 @@
 
 #include "proc.h"
 
-struct pcb *scheduler();
+struct pcb *scheduler(int priority);
 
 void remove_process_from_execution(int cpu, int core, int hthread);
 
@@ -17,8 +17,8 @@ void create_ready_queue();
 
 void insert_process_ready_queue(struct pcb *proc);
 
-void remove_process_ready_queue();
+void remove_process_ready_queue(int priority);
 
-long process_to_be_scheduled();
+int process_to_be_scheduled();
 
 #endif

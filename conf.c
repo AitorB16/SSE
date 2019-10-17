@@ -20,8 +20,8 @@ static literal_t execution_policies_l[] = {
 
 void get_conf(int kop, char *argv[]){
 
-    if (kop != 7){
-		    printf("Use: ./sim queue_policy execution_policy file_name cpu core hthread gpu\n");
+    if (kop != 8){
+		    printf("Use: ./sim queue_policy execution_policy file_name cpu core hthread gpu quantum\n");
 		    exit(-1);
     }
     if(!literal_value(scheduling_policies_l, argv[1], (int *) &conf.scheduling_policy)) {
@@ -38,6 +38,7 @@ void get_conf(int kop, char *argv[]){
     conf.ncores = atoi(argv[5]);
     conf.nhthreads = atoi(argv[6]);
     conf.ngpus = atoi(argv[7]);
+    conf.quantum=atoi(argv[8]);
 
 
 }
