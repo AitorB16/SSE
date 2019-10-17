@@ -6,7 +6,7 @@ typedef struct pcb {
 	int pid;
 	long cycles;
 	int priority;
-	int quantum;
+	long quantum;
 
 } pcb;
 
@@ -14,7 +14,7 @@ void init_pid_array();
 
 void create_allprocs_queue();
 
-void create_new_process(long duration, int priority, int quantum);
+void create_new_process(long duration, int priority, long quantum);
 
 void create_null_process(struct pcb **null_process);
 

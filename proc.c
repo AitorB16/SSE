@@ -1,6 +1,7 @@
 #include "list.h"
 #include "proc.h"
 #include "scheduling.h"
+#include "globals.h"
 #include <stdlib.h>
 #include <stdio.h>
 
@@ -24,7 +25,7 @@ void create_allprocs_queue(){
 
 }
 
-void create_new_process(long duration, int priority, int quantum){
+void create_new_process(long duration, int priority, long quantum){
 
     struct pcb *proc = malloc(sizeof(pcb));
     int pid;
@@ -33,7 +34,14 @@ void create_new_process(long duration, int priority, int quantum){
     pid = generate_pid();
     proc->pid = pid;
     proc->priority=priority;
-    proc->quantum=0;
+    //Exekuzio politika kanporatzailea bada, quantum finkatu. Bestela quantum=iraupena
+    if (!conf.execution_policy)
+    {
+    	proc->quantum=quantum;
+    }
+    else{
+    	proc->quantum=duration;
+    }
     insert_process_allprocs_queue(proc);
     printf("New process created with pid %d\n", proc->pid);
     insert_process_ready_queue(proc);

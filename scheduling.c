@@ -40,13 +40,20 @@ void remove_process_from_execution(int cpu, int core, int hthread){
     else if(proc->pid == 0){
         insert_process_ready_queue(proc);
     }
+    //Berriro sartu proz ilaran; quantuma agortu delako atera da
+    else if (proc->cycles > 0)
+    {
+    	printf("Process: %d removed due to time out\n", proc->pid);
+    	proc->quantum=conf.quantum;
+    	insert_process_ready_queue(proc);
+    }
 
 
 }
 
 void context_switch(int cpu, int core, int hthread, struct pcb *proc){
 
-  remove_process_from_execution(cpu, core, hthread);
+	remove_process_from_execution(cpu, core, hthread);
 	assign_process_to_hthread(cpu, core, hthread, proc);
 	remove_process_ready_queue(proc->priority);
 }
@@ -58,7 +65,6 @@ void dispatcher(int cpu, int core, int hthread, struct pcb *proc){
 }
 
 void schedule(int cpu, int core, int hthread){
-
     struct pcb *proc;
     int priority=process_to_be_scheduled();
     if(priority>-1){

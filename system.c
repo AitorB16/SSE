@@ -18,9 +18,12 @@ void start_simulation(){
                         schedule(i, j, k);
                     }
                     else{
+                    	computing_engine.cpus[i].cores[j].hthreads[k].proc->quantum--;
                         computing_engine.cpus[i].cores[j].hthreads[k].proc->cycles--;
-                        if(computing_engine.cpus[i].cores[j].hthreads[k].proc->cycles == 0)
-                            schedule(i, j, k);
+                        if(computing_engine.cpus[i].cores[j].hthreads[k].proc->cycles == 0 || computing_engine.cpus[i].cores[j].hthreads[k].proc->quantum==0){
+                        	 schedule(i, j, k);
+                        	
+                        }
                     }
                 }
             }
