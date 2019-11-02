@@ -12,18 +12,8 @@ struct pcb *scheduler(int priority){
 
     struct pcb *proc;
 
-    switch(conf.scheduling_policy){
+    list_head(&ready_queue[priority], &proc);
 
-        case FIFO:
-            list_head(&ready_queue[0],&proc);
-            break;
-        case PRIORITY:
-            list_head(&ready_queue[priority], &proc);
-            break;
-        default:
-            printf("Unknown scheduling policy\n");
-            exit(-1);
-    }
     return(proc);
 }
 
@@ -55,6 +45,11 @@ void context_switch(int cpu, int core, int hthread, struct pcb *proc){
 
 	remove_process_from_execution(cpu, core, hthread);
 	assign_process_to_hthread(cpu, core, hthread, proc);
+	if(proc->pid==0){
+		printf("IDLE STATE FOR CPU %d CORE %d HTHREAD %d \n",cpu,core,hthread);
+	}else{
+		printf("Assigned new process: %d to CPU %d CORE %d HTHREAD %d \n", proc->pid,cpu,core,hthread);
+	}
 	remove_process_ready_queue(proc->priority);
 }
 
@@ -67,9 +62,16 @@ void dispatcher(int cpu, int core, int hthread, struct pcb *proc){
 void schedule(int cpu, int core, int hthread){
     struct pcb *proc;
     int priority=process_to_be_scheduled();
-    if(priority>-1){
+    //lehen -1 zegoen
+    if(priority>0){
         proc = scheduler(priority);
         dispatcher(cpu, core, hthread, proc);
+        //Orain CPU-ak idle egoran sartzen direnean ez dute prozesu nulua deskartatuko bestelako prozesurik ilaran ez dagoen bitartean
+    }else if(priority==0){
+    	if(computing_engine.cpus[cpu].cores[core].hthreads[hthread].proc->pid!=0){
+    		proc = scheduler(priority);
+        	dispatcher(cpu, core, hthread, proc);
+    	}
     }
 
 }

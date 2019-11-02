@@ -18,7 +18,7 @@ void read_file(char *file_name) {
 		case FIFO:
 			while (fscanf(fd, "%ld", &ticks) != EOF){
 				fscanf(fd, "%d", &priority);
-				create_new_process(ticks, 0, conf.quantum);
+				create_new_process(ticks, 1, conf.quantum);
 				printf("Ticks %ld\n", ticks);
 			}
 			break;
