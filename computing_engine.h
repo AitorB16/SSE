@@ -1,7 +1,10 @@
 #ifndef _computing_engine
 #define _computing_engine
-
+#include "globals.h"
+#include "list.h"
 #include "proc.h"
+
+#define P_MAX 10
 
 typedef struct hardware_thread_t{
 
@@ -12,6 +15,7 @@ typedef struct hardware_thread_t{
 
 typedef struct core_t{
     int nhthreads;
+    list_t ready_queue[P_MAX];
     struct hardware_thread_t *hthreads;
 
 } core_t;

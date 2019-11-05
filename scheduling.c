@@ -5,14 +5,17 @@
 #include "computing_engine.h"
 #include <stdio.h>
 #include <stdlib.h>
+#include <unistd.h>
 
-list_t ready_queue[P_MAX];
+//list_t ready_queue[P_MAX];
 
 struct pcb *scheduler(int priority){
 
     struct pcb *proc;
-
-    list_head(&ready_queue[priority], &proc);
+    //printf("BBB\n");
+    //printf("PUNT: %d %p\n",priority, &computing_engine.cpus[1].cores[1].ready_queue[priority]);
+    list_head(&computing_engine.cpus[1].cores[1].ready_queue[priority], &proc);
+    //list_head(&ready_queue[priority], &proc);
 
     return(proc);
 }
@@ -72,36 +75,45 @@ void schedule(int cpu, int core, int hthread){
     		proc = scheduler(priority);
         	dispatcher(cpu, core, hthread, proc);
     	}
+    }else{
+    	printf("Sleep\n");
+    	sleep(5);
     }
 
 }
 
 
 void create_ready_queue(){
-  int i;
-    for (i=0;i<P_MAX;i++){
-      list_initialize(&ready_queue[i]);
-    }
+  int i,j,k;
 
+ for(i=0;i<conf.ncpus;i++){
+   	for (j=0;j<conf.ncores;j++){
+   		for(k=0;k<P_MAX;k++){
+    		list_initialize(&computing_engine.cpus[i].cores[j].ready_queue[k]);
+   		}
+    }
+}
 
 }
 
 void insert_process_ready_queue(struct pcb* proc){
 
-    list_append(&ready_queue[proc->priority], proc);
+    list_append(&computing_engine.cpus[1].cores[1].ready_queue[proc->priority], proc);
+    //list_append(&ready_queue[proc->priority], proc);
 
 }
 
 void remove_process_ready_queue(int priority){
 
-    list_rem_head(&ready_queue[priority]);
+	list_rem_head(&computing_engine.cpus[1].cores[1].ready_queue[priority]);
+    //list_rem_head(&ready_queue[priority]);
 
 }
 
 int process_to_be_scheduled(){
   int i;
-  for (i=P_MAX;i>-1;i--){
-      if(!list_empty(&ready_queue[i])){
+  for (i=P_MAX-1;i>-1;i--){
+      if(!list_empty(&computing_engine.cpus[1].cores[1].ready_queue[i])){
         return i;
       }
   }

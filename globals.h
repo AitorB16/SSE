@@ -7,7 +7,8 @@
 #define P_MAX 10
 extern struct computing_engine_t computing_engine;
 extern list_t allprocs;
-extern list_t ready_queue[P_MAX];
+//extern ready_queue* core;
+//extern list_t ready_queue[P_MAX];
 extern configuration_t conf;
 
 #endif

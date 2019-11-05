@@ -2,6 +2,7 @@
 #define _scheduling
 
 #include "proc.h"
+#include "list.h"
 
 struct pcb *scheduler(int priority);
 

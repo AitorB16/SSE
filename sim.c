@@ -17,13 +17,11 @@
 
 int main(int argc, char **argv){
 
-
   get_conf(argc - 1, argv);
 	create_allprocs_queue();
-        init_pid_array();
-	create_ready_queue();
+    init_pid_array();
 	create_computing_engine(conf.ncpus, conf.ncores, conf.nhthreads, conf.ngpus);
-
+	create_ready_queue();
 	read_file(conf.file_name);
 
   start_simulation();
