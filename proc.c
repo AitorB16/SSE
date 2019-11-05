@@ -44,7 +44,7 @@ void create_new_process(long duration, int priority, long quantum){
     }
     insert_process_allprocs_queue(proc);
     printf("New process created with pid %d\n", proc->pid);
-    insert_process_ready_queue(proc);
+    balance_process_ready_queue(proc);
 }
 
 

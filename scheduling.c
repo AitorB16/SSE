@@ -7,14 +7,13 @@
 #include <stdlib.h>
 #include <unistd.h>
 
+int balance=0;
 //list_t ready_queue[P_MAX];
-
-struct pcb *scheduler(int priority){
+struct pcb *scheduler(int priority,int cpu,int core){
 
     struct pcb *proc;
-    //printf("BBB\n");
     //printf("PUNT: %d %p\n",priority, &computing_engine.cpus[1].cores[1].ready_queue[priority]);
-    list_head(&computing_engine.cpus[1].cores[1].ready_queue[priority], &proc);
+    list_head(&computing_engine.cpus[cpu].cores[core].ready_queue[priority], &proc);
     //list_head(&ready_queue[priority], &proc);
 
     return(proc);
@@ -31,14 +30,14 @@ void remove_process_from_execution(int cpu, int core, int hthread){
         remove_process_allprocs_queue(proc);
     }
     else if(proc->pid == 0){
-        insert_process_ready_queue(proc);
+        insert_process_ready_queue(proc,cpu,core);
     }
     //Berriro sartu proz ilaran; quantuma agortu delako atera da
     else if (proc->cycles > 0)
     {
     	printf("Process: %d removed due to time out\n", proc->pid);
     	proc->quantum=conf.quantum;
-    	insert_process_ready_queue(proc);
+    	insert_process_ready_queue(proc,cpu,core);
     }
 
 
@@ -53,7 +52,7 @@ void context_switch(int cpu, int core, int hthread, struct pcb *proc){
 	}else{
 		printf("Assigned new process: %d to CPU %d CORE %d HTHREAD %d \n", proc->pid,cpu,core,hthread);
 	}
-	remove_process_ready_queue(proc->priority);
+	remove_process_ready_queue(proc->priority,cpu,core);
 }
 
 void dispatcher(int cpu, int core, int hthread, struct pcb *proc){
@@ -64,20 +63,20 @@ void dispatcher(int cpu, int core, int hthread, struct pcb *proc){
 
 void schedule(int cpu, int core, int hthread){
     struct pcb *proc;
-    int priority=process_to_be_scheduled();
+    int priority=process_to_be_scheduled(cpu,core);
     //lehen -1 zegoen
     if(priority>0){
-        proc = scheduler(priority);
+        proc = scheduler(priority,cpu,core);
         dispatcher(cpu, core, hthread, proc);
         //Orain CPU-ak idle egoran sartzen direnean ez dute prozesu nulua deskartatuko bestelako prozesurik ilaran ez dagoen bitartean
     }else if(priority==0){
     	if(computing_engine.cpus[cpu].cores[core].hthreads[hthread].proc->pid!=0){
-    		proc = scheduler(priority);
+    		proc = scheduler(priority,cpu,core);
         	dispatcher(cpu, core, hthread, proc);
     	}
     }else{
-    	printf("Sleep\n");
-    	sleep(5);
+    	//printf("Sleep\n");
+    	//sleep(5);
     }
 
 }
@@ -96,24 +95,32 @@ void create_ready_queue(){
 
 }
 
-void insert_process_ready_queue(struct pcb* proc){
 
-    list_append(&computing_engine.cpus[1].cores[1].ready_queue[proc->priority], proc);
+void insert_process_ready_queue(struct pcb* proc,int cpu, int core){
+	list_append(&computing_engine.cpus[cpu].cores[core].ready_queue[proc->priority], proc);
+}
+
+void balance_process_ready_queue(struct pcb* proc){
+	int kokapen1= balance % conf.ncpus;
+	int kokapen2= balance % conf.ncores;
+    list_append(&computing_engine.cpus[kokapen1].cores[kokapen2].ready_queue[proc->priority], proc);
+    balance++;
+    printf("%d %d\n",kokapen1,kokapen2);
     //list_append(&ready_queue[proc->priority], proc);
 
 }
 
-void remove_process_ready_queue(int priority){
+void remove_process_ready_queue(int priority, int cpu, int core){
 
-	list_rem_head(&computing_engine.cpus[1].cores[1].ready_queue[priority]);
+	list_rem_head(&computing_engine.cpus[cpu].cores[core].ready_queue[priority]);
     //list_rem_head(&ready_queue[priority]);
 
 }
 
-int process_to_be_scheduled(){
+int process_to_be_scheduled(int cpu, int core){
   int i;
   for (i=P_MAX-1;i>-1;i--){
-      if(!list_empty(&computing_engine.cpus[1].cores[1].ready_queue[i])){
+      if(!list_empty(&computing_engine.cpus[cpu].cores[core].ready_queue[i])){
         return i;
       }
   }
