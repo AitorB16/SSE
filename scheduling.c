@@ -8,20 +8,17 @@
 #include <unistd.h>
 
 int balance_tmp=0;
-//list_t ready_queue[P_MAX];
 struct pcb *scheduler(int priority,int cpu,int core){
 
     struct pcb *proc;
-    //printf("PUNT: %d %p\n",priority, &computing_engine.cpus[1].cores[1].ready_queue[priority]);
     list_head(&computing_engine.cpus[cpu].cores[core].ready_queue[priority], &proc);
-    //list_head(&ready_queue[priority], &proc);
 
     return(proc);
 }
 
 
 void remove_process_from_execution(int cpu, int core, int hthread){
-	int a,b;
+	
     struct pcb *proc;
 
     proc = computing_engine.cpus[cpu].cores[core].hthreads[hthread].proc;
@@ -95,8 +92,7 @@ void schedule(int cpu, int core, int hthread){
         	dispatcher(cpu, core, hthread, proc);
     	}
     }else{
-    	//printf("Sleep\n");
-    	//sleep(5);
+
     }
 
 }
@@ -126,7 +122,6 @@ void balance_process_ready_queue(struct pcb* proc){
     list_append(&computing_engine.cpus[kokapen1].cores[kokapen2].ready_queue[proc->priority], proc);
     computing_engine.cpus[kokapen1].cores[kokapen2].nprocesses_rq++;
     balance_tmp++;
-    //list_append(&ready_queue[proc->priority], proc);
 
 }
 
@@ -135,7 +130,6 @@ void remove_process_ready_queue(int priority, int cpu, int core){
 	list_rem_head(&computing_engine.cpus[cpu].cores[core].ready_queue[priority]);
 	if(priority > 0)
 		computing_engine.cpus[cpu].cores[core].nprocesses_rq--;
-    //list_rem_head(&ready_queue[priority]);
 
 }
 

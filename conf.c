@@ -7,8 +7,7 @@ configuration_t conf;
 
 static literal_t scheduling_policies_l[] = {
     {0, "fifo"},
-    {1, "rr"},
-    {2, "priority"}
+    {1, "priority"}
 };
 
 static literal_t execution_policies_l[] = {

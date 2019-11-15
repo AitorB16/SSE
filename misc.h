@@ -3,7 +3,6 @@
 
 typedef enum scheduling_policy_t{
     FIFO,
-    RR,
     PRIORITY,
 } scheduling_policy_t;
 
