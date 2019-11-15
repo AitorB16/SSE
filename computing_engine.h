@@ -15,6 +15,7 @@ typedef struct hardware_thread_t{
 
 typedef struct core_t{
     int nhthreads;
+    int nprocesses_rq;
     list_t ready_queue[P_MAX];
     struct hardware_thread_t *hthreads;
 

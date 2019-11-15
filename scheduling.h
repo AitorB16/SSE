@@ -8,6 +8,8 @@ struct pcb *scheduler(int priority,int cpu, int core);
 
 void remove_process_from_execution(int cpu, int core, int hthread);
 
+void balance (int *cpu, int *core);
+
 void context_switch(int cpu, int core, int hthread, struct pcb *proc);
 
 void dispatcher(int cpu, int core, int hthread, struct pcb *proc);

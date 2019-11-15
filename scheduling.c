@@ -7,7 +7,7 @@
 #include <stdlib.h>
 #include <unistd.h>
 
-int balance=0;
+int balance_tmp=0;
 //list_t ready_queue[P_MAX];
 struct pcb *scheduler(int priority,int cpu,int core){
 
@@ -21,7 +21,7 @@ struct pcb *scheduler(int priority,int cpu,int core){
 
 
 void remove_process_from_execution(int cpu, int core, int hthread){
-
+	int a,b;
     struct pcb *proc;
 
     proc = computing_engine.cpus[cpu].cores[core].hthreads[hthread].proc;
@@ -30,17 +30,37 @@ void remove_process_from_execution(int cpu, int core, int hthread){
         remove_process_allprocs_queue(proc);
     }
     else if(proc->pid == 0){
-        insert_process_ready_queue(proc,cpu,core);
+        	insert_process_ready_queue(proc,cpu,core);
     }
     //Berriro sartu proz ilaran; quantuma agortu delako atera da
     else if (proc->cycles > 0)
     {
     	printf("Process: %d removed due to time out\n", proc->pid);
+    	balance(&cpu,&core);
     	proc->quantum=conf.quantum;
     	insert_process_ready_queue(proc,cpu,core);
+    	computing_engine.cpus[cpu].cores[core].nprocesses_rq++;
     }
 
 
+}
+
+void balance (int *cpu, int *core){
+	int min,i,j,l1,l2;
+	l1=*cpu;
+	l2=*core;
+	min= computing_engine.cpus[*cpu].cores[*core].nprocesses_rq;
+		for (i=0;i<conf.ncpus;i++){
+			for(j=0;j<conf.ncores;j++){
+				if(computing_engine.cpus[i].cores[j].nprocesses_rq < min - 1){
+					min=computing_engine.cpus[i].cores[j].nprocesses_rq;
+					l1=i;
+					l2=j;
+				}
+			}
+		}
+		*cpu=l1;
+		*core=l2;
 }
 
 void context_switch(int cpu, int core, int hthread, struct pcb *proc){
@@ -101,11 +121,11 @@ void insert_process_ready_queue(struct pcb* proc,int cpu, int core){
 }
 
 void balance_process_ready_queue(struct pcb* proc){
-	int kokapen1= balance % conf.ncpus;
-	int kokapen2= balance % conf.ncores;
+	int kokapen1= balance_tmp % conf.ncpus;
+	int kokapen2= balance_tmp % conf.ncores;
     list_append(&computing_engine.cpus[kokapen1].cores[kokapen2].ready_queue[proc->priority], proc);
-    balance++;
-    printf("%d %d\n",kokapen1,kokapen2);
+    computing_engine.cpus[kokapen1].cores[kokapen2].nprocesses_rq++;
+    balance_tmp++;
     //list_append(&ready_queue[proc->priority], proc);
 
 }
@@ -113,6 +133,8 @@ void balance_process_ready_queue(struct pcb* proc){
 void remove_process_ready_queue(int priority, int cpu, int core){
 
 	list_rem_head(&computing_engine.cpus[cpu].cores[core].ready_queue[priority]);
+	if(priority > 0)
+		computing_engine.cpus[cpu].cores[core].nprocesses_rq--;
     //list_rem_head(&ready_queue[priority]);
 
 }

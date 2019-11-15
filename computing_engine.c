@@ -21,6 +21,7 @@ void create_computing_engine(int ncpus, int ncores, int nhthreads, int ngpus){
         for(j = 0; j < ncores; j++){
             computing_engine.cpus[i].cores[j].hthreads =  malloc(nhthreads * sizeof(struct hardware_thread_t));
             computing_engine.cpus[i].cores[j].nhthreads = nhthreads;
+            computing_engine.cpus[i].cores[j].nprocesses_rq=0;
             for(k = 0; k < computing_engine.cpus[i].cores[j].nhthreads; k++){
                 computing_engine.cpus[i].cores[j].hthreads[k].proc = NULL; 
             }
